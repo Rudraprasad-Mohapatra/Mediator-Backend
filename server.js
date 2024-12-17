@@ -2,6 +2,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import authRoutes from './src/routes/authRoutes.js';
+import publicRoutes from './src/routes/publicRoutes.js';
 import sequelize from './src/config/db.js';
 
 // Load environment variables from .env file
@@ -15,6 +16,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/public', publicRoutes);
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Mediator App Backend');

@@ -11,6 +11,10 @@ class User extends Model {
   async comparePassword(password) {
     return await bcrypt.compare(password, this.password);
   }
+
+  static async findByEmail(email) {
+    return await this.findOne({ where: { email } });
+  }
 }
 
 User.init({
@@ -43,6 +47,18 @@ User.init({
   status: {
     type: DataTypes.ENUM('active', 'inactive', 'suspended'),
     defaultValue: 'active'
+  },
+  refreshToken: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  passwordResetToken: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  passwordResetExpires: {
+    type: DataTypes.DATE,
+    allowNull: true
   }
 }, {
   sequelize,
