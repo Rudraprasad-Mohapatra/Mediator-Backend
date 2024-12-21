@@ -1,11 +1,5 @@
-// src/controllers/authController.js
-import User from '../models/User.js';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import { AuthService } from '../services/AuthService.js';
 import { BaseController } from './BaseController.js';
-
-dotenv.config();
 
 export class AuthController extends BaseController {
     constructor() {
@@ -13,30 +7,63 @@ export class AuthController extends BaseController {
         this.authService = new AuthService();
     }
 
+    register = async (req, res) => {
+        await this.handleRequest(req, res, async () => {
+            const { user, tokens } = await this.authService.register(req.body);
+            res.status(201).json({
+                message: 'User registered successfully',
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    username: user.username,
+                    role: user.role
+                },
+                tokens
+            });
+        });
+    }
+
+    login = async (req, res) => {
+        await this.handleRequest(req, res, async () => {
+            const { email, password } = req.body;
+            const { user, tokens } = await this.authService.login(email, password);
+            res.json({
+                message: 'Login successful',
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    username: user.username,
+                    role: user.role
+                },
+                tokens
+            });
+        });
+    }
+
     refreshToken = async (req, res) => {
         await this.handleRequest(req, res, async () => {
             const { refreshToken } = req.body;
-            
             if (!refreshToken) {
                 return res.status(400).json({
                     message: 'Refresh token required',
                     code: 'REFRESH_TOKEN_REQUIRED'
                 });
             }
-
-            try {
-                const tokens = await this.authService.refreshAccessToken(refreshToken);
-                res.json({
-                    message: 'Tokens refreshed successfully',
-                    tokens
-                });
-            } catch (error) {
-                res.status(401).json({
-                    message: 'Invalid refresh token',
-                    code: 'INVALID_REFRESH_TOKEN'
-                });
-            }
+            const tokens = await this.authService.refreshToken(refreshToken);
+            res.json({
+                message: 'Tokens refreshed successfully',
+                tokens
+            });
         });
     }
 
+    logout = async (req, res) => {
+        await this.handleRequest(req, res, async () => {
+            await this.authService.logout(req.user.id);
+            res.json({
+                message: 'Logged out successfully'
+            });
+        });
+    }
+    
 }

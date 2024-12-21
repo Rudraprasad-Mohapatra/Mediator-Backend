@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 import User from '../models/User.js';
 
 export class AuthService {
@@ -44,7 +43,7 @@ export class AuthService {
 
             // Generate new tokens
             const tokens = this.generateTokens(user.id);
-            
+
             // Update refresh token in database
             await user.update({ refreshToken: tokens.refreshToken });
 
@@ -56,20 +55,20 @@ export class AuthService {
 
     async register(userData) {
         const { email, password, username } = userData;
-        
+
         // Check if user exists
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
-          throw new Error('User already exists');
+            throw new Error('User already exists');
         }
-    
+
         // Create new user
         const user = await User.create({
-          email,
-          password,
-          username
+            email,
+            password,
+            username
         });
-    
+
         const tokens = this.generateTokens(user.id);
         await user.update({ refreshToken: tokens.refreshToken });
 
@@ -79,32 +78,44 @@ export class AuthService {
     async login(email, password) {
         const user = await User.findByEmail(email);
         if (!user || !(await user.comparePassword(password))) {
-          throw new Error('Invalid credentials');
+            throw new Error('Invalid credentials');
         }
-    
+
         const tokens = this.generateTokens(user.id);
         await user.update({ refreshToken: tokens.refreshToken });
-    
+
         return { user, tokens };
     }
 
     async refreshToken(refreshToken) {
         try {
-          const decoded = jwt.verify(refreshToken, this.jwtRefreshSecret);
-          const user = await User.findByPk(decoded.userId);
-    
-          if (!user || user.refreshToken !== refreshToken) {
-            throw new Error('Invalid refresh token');
-          }
-    
-          const tokens = this.generateTokens(user.id);
-          await user.update({ refreshToken: tokens.refreshToken });
-    
-          return tokens;
+            const decoded = jwt.verify(refreshToken, this.jwtRefreshSecret);
+            const user = await User.findByPk(decoded.userId);
+
+            if (!user || user.refreshToken !== refreshToken) {
+                throw new Error('Invalid refresh token');
+            }
+
+            const tokens = this.generateTokens(user.id);
+            await user.update({ refreshToken: tokens.refreshToken });
+
+            return tokens;
         } catch (error) {
-          throw new Error('Invalid refresh token');
+            throw new Error('Invalid refresh token');
         }
-      }
+    }
+
+    async logout(userId) {
+        const user = await User.findByPk(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Clear the refresh token in the database
+        await user.update({ refreshToken: null });
+
+        return { message: 'Logged out successfully' };
+    }
 
 }
 
