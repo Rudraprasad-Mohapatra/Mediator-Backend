@@ -27,6 +27,9 @@ export class AuthController extends BaseController {
         await this.handleRequest(req, res, async () => {
             const { email, password } = req.body;
             const { user, tokens } = await this.authService.login(email, password);
+
+            // Set HTTP-only cookies
+            this.authService.setCookies(res, tokens);
             res.json({
                 message: 'Login successful',
                 user: {
@@ -50,6 +53,9 @@ export class AuthController extends BaseController {
                 });
             }
             const tokens = await this.authService.refreshToken(refreshToken);
+            
+            this.authService.setCookies(res, tokens);
+            
             res.json({
                 message: 'Tokens refreshed successfully',
                 tokens
@@ -60,6 +66,9 @@ export class AuthController extends BaseController {
     logout = async (req, res) => {
         await this.handleRequest(req, res, async () => {
             await this.authService.logout(req.user.id);
+
+            this.authService.clearCookies(res);
+            
             res.json({
                 message: 'Logged out successfully'
             });

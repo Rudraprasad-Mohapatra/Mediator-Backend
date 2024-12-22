@@ -1,6 +1,7 @@
 // server.js
 import express from 'express';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import authRoutes from './src/routes/authRoutes.js'
 import publicRoutes from './src/routes/publicRoutes.js'
 import dashboardRoutes from './src/routes/dashboardRoutes.js'
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
+app.use(cookieParser());
 
 // Routes
 app.use('/api/public', publicRoutes);

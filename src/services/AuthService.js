@@ -117,5 +117,28 @@ export class AuthService {
         return { message: 'Logged out successfully' };
     }
 
+    setCookies(res, tokens) {
+        // Set HTTP-only cookies
+        res.cookie('accessToken', tokens.accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000 // 15 minutes
+        });
+
+        res.cookie('refreshToken', tokens.refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            path: '/api/auth/refresh-token', // Only sent to refresh endpoint
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+    }
+
+    clearCookies(res) {
+        res.clearCookie('accessToken');
+        res.clearCookie('refreshToken');
+    }
+
 }
 
