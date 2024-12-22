@@ -1,8 +1,9 @@
 // server.js
 import express from 'express';
 import dotenv from 'dotenv';
-import authRoutes from './src/routes/authRoutes.js';
-import publicRoutes from './src/routes/publicRoutes.js';
+import authRoutes from './src/routes/authRoutes.js'
+import publicRoutes from './src/routes/publicRoutes.js'
+import dashboardRoutes from './src/routes/dashboardRoutes.js'
 import sequelize from './src/config/db.js';
 
 // Load environment variables from .env file
@@ -15,11 +16,23 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Routes
-app.use('/api/auth', authRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+// app.use('/api/protected', protectedRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Welcome to the Mediator App Backend');
+  res.json({
+      message: 'Welcome to Mediator Application',
+      features: [
+          'Connect with verified mediators',
+          'Secure chat system',
+          'Case management',
+          'Real-time updates'
+      ],
+      status: 'online',
+      version: '1.0.0'
+  });
 });
 
 // Database connection and server startup
