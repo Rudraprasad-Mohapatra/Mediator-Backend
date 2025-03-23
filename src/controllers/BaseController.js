@@ -1,4 +1,4 @@
-import { handleError } from '../utils/errors.js';
+import { handleError } from "../utils/errors.js";
 
 export class BaseController {
     async handleRequest(req, res, callback) {

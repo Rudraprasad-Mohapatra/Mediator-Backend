@@ -6,4 +6,4 @@ export class ChatService {
     async getConversation(userId1, userId2) {
         // Get conversation logic
     }
-} 
+}
