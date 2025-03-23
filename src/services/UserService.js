@@ -6,4 +6,4 @@ export class UserService {
     async updateProfile(userId, profileData) {
         // Update profile logic
     }
-} 
+}

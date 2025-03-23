@@ -1,11 +1,11 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
 
-router.get('/about', (req, res) => {
+router.get("/about", (req, res) => {
     res.json({
-        name: 'Mediator App',
-        version: '1.0.0',
-        description: 'A platform for connecting mediators and users'
+        name: "Mediator App",
+        version: "1.0.0",
+        description: "A platform for connecting mediators and users",
     });
 });
 
