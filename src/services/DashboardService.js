@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../models/user.js";
 import { NotFoundError } from "../utils/errors.js";
 
 export class DashboardService {
