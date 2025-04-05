@@ -1,10 +1,10 @@
 FROM node:22
 
 # Create app directory
-WORKDIR /app
+WORKDIR /mediator_node_app
 
-# Install app dependencies
-COPY package.json .
+# Copy files
+COPY package*.json ./
 RUN npm install
 
 COPY . .

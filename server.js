@@ -1,11 +1,11 @@
 // server.js
-import express from "express";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import authRoutes from "./src/routes/authRoutes.js";
-import publicRoutes from "./src/routes/publicRoutes.js";
-import dashboardRoutes from "./src/routes/dashboardRoutes.js";
+import dotenv from "dotenv";
+import express from "express";
 import sequelize from "./src/config/db.js";
+import authRoutes from "./src/routes/authRoutes.js";
+import dashboardRoutes from "./src/routes/dashboardRoutes.js";
+import publicRoutes from "./src/routes/publicRoutes.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -45,7 +45,7 @@ const startServer = async () => {
         console.log("Database connection has been established successfully.");
 
         // Sync database (create tables if they don't exist)
-        await sequelize.sync();
+        await sequelize.sync({ alter: true });
         console.log("Database synchronized");
 
         // Start the server
